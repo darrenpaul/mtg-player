@@ -1,0 +1,88 @@
+.submit-button {
+	/* SIZE */
+	/* MARGINS AND PADDING */
+	@apply py-2 px-8;
+	/* LAYOUT */
+	@apply block;
+	/* BORDERS */
+	@apply border rounded-full;
+	/* COLORS */
+	@apply bg-black text-white;
+	/* TEXT */
+	@apply text-center;
+	/* ANIMATION AND EFFECTS */
+}
+
+.submit-button-stretch {
+	@extend .submit-button;
+	/* SIZE */
+	@apply w-full;
+	/* MARGINS AND PADDING */
+	/* LAYOUT */
+	/* BORDERS */
+	/* COLORS */
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
+
+.outline-button {
+	@extend .submit-button;
+	/* SIZE */
+	/* MARGINS AND PADDING */
+	/* LAYOUT */
+	/* BORDERS */
+	@apply border;
+	/* COLORS */
+	@apply bg-white text-black border-black;
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
+
+.outline-button-stretch {
+	@extend .outline-button;
+	/* SIZE */
+	@apply w-full;
+	/* MARGINS AND PADDING */
+	/* LAYOUT */
+	/* BORDERS */
+	/* COLORS */
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
+
+.slim-button {
+	@extend .submit-button;
+	/* SIZE */
+	/* MARGINS AND PADDING */
+	@apply py-1 px-8;
+	/* LAYOUT */
+	/* BORDERS */
+	/* COLORS */
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
+
+.floating-button {
+	/* SIZE */
+	/* MARGINS AND PADDING */
+	@apply p-4;
+	/* LAYOUT */
+	@apply absolute top-1/2 right-0 -translate-y-1/2;
+	/* BORDERS */
+	/* COLORS */
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
+
+.link-button {
+	@apply w-full h-full;
+	/* SIZE */
+	/* MARGINS AND PADDING */
+	@apply py-4 px-8;
+	/* LAYOUT */
+	@apply flex justify-center items-center gap-4;
+	/* BORDERS */
+	/* COLORS */
+	/* TEXT */
+	/* ANIMATION AND EFFECTS */
+}
