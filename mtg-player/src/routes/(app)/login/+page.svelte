@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	let email = '';
 	let password = '';
 
@@ -10,6 +12,10 @@
 				password
 			})
 		});
+
+		if (response.ok) {
+			goto('/dashboard');
+		}
 	};
 </script>
 
@@ -29,4 +35,6 @@
 
 		<button>Login</button>
 	</form>
+
+	<a href="/register">Register</a>
 </div>

@@ -13,14 +13,14 @@
 <style lang="postcss">
 	.battlefield {
 		/* SIZE */
-		@apply w-screen h-[50vh];
+		@apply h-full;
 		/* MARGINS AND PADDING */
 		/* LAYOUT */
-		@apply relative flex-grow;
+		@apply relative;
 		/* BORDERS */
 		@apply border-2;
 		/* COLORS */
-		@apply bg-green-400 border-black;
+		@apply bg-red-400 border-black;
 		/* TEXT */
 		/* ANIMATION AND EFFECTS */
 	}

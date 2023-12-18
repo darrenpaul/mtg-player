@@ -1,0 +1,65 @@
+{
+	"site": {
+		"brandName": "OhSticks",
+		"copyright": "© 2023 OhSticks. All Rights Reserved."
+	},
+	"socials": {
+		"facebook": { "url": "https://www.facebook.com/ohsticks", "label": "Facebook" },
+		"instagram": { "url": "https://www.instagram.com/ohsticksstore", "label": "Instagram" },
+		"pinterest": { "url": "https://www.pinterest.com/ohsticks", "label": "Pinterest" }
+	},
+	"page": {
+		"decks": {
+			"myDecks": "My Decks",
+			"newDeck": "New Deck",
+			"createDeck": "Create Deck",
+			"updateDeck": "Update Deck",
+			"deckName": "Deck Name"
+		}
+	},
+	"component": {
+		"card": {
+			"setCommander": "Set Commander",
+			"unsetCommander": "Unset Commander",
+			"addCounter": "Add Counter",
+			"tokenCopy": "Token Copy"
+		},
+		"cardBatchAdd": {
+			"addCards": "Add Cards"
+		},
+		"cardList": {
+			"cards": "Cards",
+			"commander": "Commander"
+		},
+		"graveyard": {
+			"placeholder": "Graveyard"
+		},
+		"createGameForm": {
+			"gameName": "Game Name",
+			"username": "Username",
+			"selectDeck": "Select Deck"
+		},
+		"library": {
+			"drawCard": "Draw Card",
+			"peek": "Peek",
+			"shuffle": "Shuffle"
+		},
+		"peekModal": {
+			"peek": "Peek",
+			"peekTop": "Peek Top",
+			"peekBottom": "Peek Bottom",
+			"close": "Close"
+		},
+		"board": {
+			"commandZone": "Command Zone",
+			"graveyard": "Graveyard",
+			"exile": "Exile"
+		},
+		"counterModal": {
+			"counters": "Counters",
+			"add": "Add",
+			"remove": "Remove",
+			"close": "Close"
+		}
+	}
+}

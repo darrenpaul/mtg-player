@@ -1,46 +1,90 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import { BATTLEFIELD, GRAVEYARD, HAND } from '$lib/constants/cardZones';
 	import { getContext } from 'svelte';
 	import { asDroppable, asDropZone } from 'svelte-drag-and-drop-actions';
 	import type { Writable } from 'svelte/store';
+	import Card from '$lib/components/game/card/+Card.svelte';
+	import { updateCurrentPlayer } from '$lib/utils/game/player';
+	import { saveCardsInHand } from '$lib/utils/game/hand';
+	import { board as boardStore } from '$lib/stores/boardStore';
+	import { hand as handStore } from '$lib/stores/handStore';
+	import onDrop from '$lib/utils/game/onDrop';
+	import { user as userStore } from '$lib/stores/userStore';
 
-	const cardsInHandStore: Writable<Array<any>> = getContext('cardsInHandStore');
+	const socketStore: Writable<Array<any>> = getContext('socketStore');
 
-	function onHandDrop(x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) {
-		const { card, from } = DroppableExtras;
-		cards = [
-			...cards,
-			{
-				...card
-			}
-		];
+	let player;
 
-		if (from === 'battlefield') {
-			battlefieldCards = battlefieldCards.filter((c) => c.id !== card.id);
-		}
-	}
+	// const onDrop = async (x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) => {
+	// 	console.log('onDrop ~ DropZoneExtras:', DropZoneExtras);
+	// 	let boardChanged = false;
+	// 	const { card, from } = DroppableExtras;
+
+	// 	player = getCurrentPlayer($boardStore.players, $userStore.username);
+	// 	const battlefield: Array<any> = player.battlefield;
+	// 	const commandZone: Array<any> = player.commandZone;
+	// 	const graveyard: Array<any> = player.graveyard;
+
+	// 	if (from === BATTLEFIELD) {
+	// 		const newBattlefield = battlefield.filter((c) => c.id !== card.id);
+
+	// 		const newPlayerState = updateCurrentPlayer($boardStore.players, $userStore.username, {
+	// 			battlefield: newBattlefield
+	// 		});
+
+	// 		const newHand = [...$handStore, card];
+	// 		handStore.set(newHand);
+
+	// 		boardStore.set({ ...$boardStore, players: newPlayerState });
+	// 		boardChanged = true;
+	// 	}
+
+	// 	if (from === GRAVEYARD) {
+	// 		const newGraveyard = graveyard.filter((c) => c.id !== card.id);
+
+	// 		const newPlayerState = $boardStore.players.map((player) => {
+	// 			if (player.email === $userStore.email) {
+	// 				return {
+	// 					...player,
+	// 					graveyard: newGraveyard
+	// 				};
+	// 			}
+	// 			return player;
+	// 		});
+
+	// 		const newHand = [...$handStore, card];
+	// 		handStore.set(newHand);
+
+	// 		boardStore.set({ ...$boardStore, players: newPlayerState });
+	// 		boardChanged = true;
+	// 	}
+
+	// 	if (boardChanged) {
+	// 		await fetch('/api/game', {
+	// 			method: 'PUT',
+	// 			headers: {
+	// 				'Content-Type': 'application/json'
+	// 			},
+	// 			body: JSON.stringify({ id: $page.params.slug, board: $boardStore })
+	// 		});
+	// 	}
+
+	// 	saveCardsInHand($page.params.slug, $handStore);
+	// };
 </script>
 
-{#if $cardsInHandStore}
+{#if $handStore}
 	<div
 		class="hand"
 		use:asDropZone={{
-			Extras: 'hand',
+			Extras: { to: HAND },
 			TypesToAccept: { 'card/plain': 'all' },
-			onDrop: onHandDrop
+			onDrop: onDrop
 		}}
 	>
-		{#each $cardsInHandStore as card}
-			<div
-				class="card"
-				style="left:{card.x}px; top:{card.y}px;"
-				use:asDroppable={{
-					Operations: 'copy',
-					DataToOffer: { 'card/plain': '' },
-					Extras: { card, from: 'hand' }
-				}}
-			>
-				<img src={card.imageUrl} />
-			</div>
+		{#each $handStore as card (card.id)}
+			<Card {card} from={HAND} />
 		{/each}
 	</div>
 {/if}
@@ -49,13 +93,14 @@
 	.hand {
 		/* SIZE */
 		@apply w-full h-[204px];
-		/* MARGINS AND PADDING */
-		/* LAYOUT */
-		@apply relative flex;
+		/* MARGIN & PADDING */
+		/* DISPLAY */
+		@apply flex;
+		/* ALIGNMENT */
 		/* BORDERS */
-		@apply bg-red-400;
 		/* COLORS */
 		/* TEXT */
-		/* ANIMATION AND EFFECTS */
+		/* ANIMATION */
+		/* EFFECT */
 	}
 </style>

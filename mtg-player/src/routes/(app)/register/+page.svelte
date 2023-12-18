@@ -36,4 +36,6 @@
 
 		<button>Register</button>
 	</form>
+
+	<a href="/login">Login</a>
 </div>

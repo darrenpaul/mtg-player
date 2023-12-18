@@ -6,6 +6,9 @@ export default {
 			fontFamily: {
 				poppins: ['Poppins', 'sans-serif']
 			},
+			height: {
+				'navigation-desktop': '3rem'
+			},
 			zIndex: {
 				navigation: '100',
 				'mobile-menu': '200',

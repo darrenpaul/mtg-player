@@ -2,9 +2,9 @@
 	import { page } from '$app/stores';
 	import { getContext, onMount } from 'svelte';
 	import type { Writable } from 'svelte/store';
+	import { board as boardStore } from '$lib/stores/boardStore';
+	import { user as userStore } from '$lib/stores/userStore';
 
-	const userStore: Writable<Array<any>> = getContext('userStore');
-	const boardStore: Writable<Array<any>> = getContext('boardStore');
 	const socketStore: Writable<Array<any>> = getContext('socketStore');
 
 	let deckId: string;
@@ -18,11 +18,29 @@
 		}
 	});
 
-	const onSaveDeck = () => {
+	const onSaveDeck = async () => {
+		const response = await fetch(`/api/deck?slug=${deckId}`, {
+			method: 'GET'
+		});
+		const jsonData = await response.json();
+
+		const commanders = jsonData.cards
+			.filter((card) => card.tag === 'commander')
+			.map((card) => {
+				return {
+					id: card.id,
+					cardId: card.expand.card.id,
+					name: card.expand.card.name,
+					imageUrl: card.expand.card.images.small,
+					tag: card.tag
+				};
+			});
+
 		const player = $boardStore.players.find((player) => {
 			return player.email === $userStore.email;
 		});
 		player.deck = deckId;
+		player.commandZone = [...commanders];
 
 		const players = [
 			player,

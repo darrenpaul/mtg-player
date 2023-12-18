@@ -1,7 +1,7 @@
 import { CARDS_API } from '$lib/server/constants/api/scryfall';
 import { CARDS_TABLE } from '$lib/server/constants/database';
 
-const addCard = async (locals, card) => {
+const addCard = async (pb, card) => {
 	const images = {
 		small: card.image_uris.small,
 		normal: card.image_uris.normal,
@@ -12,26 +12,27 @@ const addCard = async (locals, card) => {
 		name: card.name,
 		power: card.power,
 		toughness: card.toughness,
-		type_line: card.type_line,
-		oracle_text: card.oracle_text,
+		typeLine: card.type_line,
+		oracleText: card.oracle_text,
 		images: images,
-		mana_cost: card.colors,
+		manaCost: card.mana_cost,
 		keywords: card.keywords,
-		scryfall_id: card.id
+		scryfallId: card.id
 	};
 
 	try {
-		return await locals.pb.collection(CARDS_TABLE).create(data);
+		return await pb.collection(CARDS_TABLE).create(data);
 	} catch (error) {
+		console.log('Error adding card to database');
 		console.log(data);
 		console.error(error);
 	}
 };
 
 /** @type {import('./$types').RequestHandler} */
-export const GET = async ({ url, locals }) => {
+export const GET = async ({ url, locals: { pb } }) => {
 	const name = url.searchParams.get('name');
-	const records = await locals.pb.collection(CARDS_TABLE).getList(1, 50, {
+	const records = await pb.collection(CARDS_TABLE).getList(1, 50, {
 		filter: `name = "${name}"`
 	});
 
@@ -51,7 +52,13 @@ export const GET = async ({ url, locals }) => {
 		}
 
 		const jsonData = await response.json();
-		await addCard(locals, jsonData);
+		const newAddedCards = await addCard(pb, jsonData);
+		if (!newAddedCards) {
+			return new Response(JSON.stringify({ error: 'Error adding card to database' }), {
+				status: 500
+			});
+		}
+		return new Response(JSON.stringify([newAddedCards]));
 	}
 
 	return new Response(JSON.stringify(records.items));

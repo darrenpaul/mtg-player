@@ -2,8 +2,8 @@ import { DECKS_TABLE, DECK_CARDS_TABLE } from '$lib/server/constants/database';
 
 const getDeckCards = async (pb, deckId) => {
 	const cards = await pb.collection(DECK_CARDS_TABLE).getFullList({
-		filter: `deckId = "${deckId}"`,
-		expand: ['cardId']
+		filter: `deck = "${deckId}"`,
+		expand: ['card']
 	});
 
 	return cards;
@@ -33,11 +33,11 @@ export const GET = async ({ url, locals: { pb } }) => {
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({ request, locals }) => {
-	const { name } = await request.json();
+	const { deckName } = await request.json();
 
 	const data = {
 		userId: locals.pb.authStore.model.id,
-		name
+		name: deckName
 	};
 
 	const record = await locals.pb.collection(DECKS_TABLE).create(data);

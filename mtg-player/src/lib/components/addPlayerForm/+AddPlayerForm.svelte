@@ -3,9 +3,8 @@
 	import type { Writable } from 'svelte/store';
 	import type { Player } from './types';
 	import { MAX_PLAYERS } from './constants';
-
-	const userStore: Writable<Array<any>> = getContext('userStore');
-	const boardStore: Writable<Array<any>> = getContext('boardStore');
+	import { board as boardStore } from '$lib/stores/boardStore';
+	import { user as userStore } from '$lib/stores/userStore';
 
 	export let gameCreationStep: string;
 
@@ -41,8 +40,6 @@
 			]
 		};
 		boardStore.set(newBoardState);
-
-		gameCreationStep = 'select-deck';
 	};
 </script>
 

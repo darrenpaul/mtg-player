@@ -1,3 +1,3 @@
 export type Player = {
-	email: string;
+	username: string;
 };

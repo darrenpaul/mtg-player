@@ -2,21 +2,13 @@ import { GAMES_TABLE } from '$lib/server/constants/database';
 
 /** @type {import('./$types').RequestHandler} */
 export const GET = async ({ url, locals: { pb } }) => {
-	const gameName = url.searchParams.get('name');
+	const id = url.searchParams.get('id');
 
-	const resultList = await pb.collection(GAMES_TABLE).getList(1, 50, {
-		filter: `name = "${gameName}"`
+	const record = await pb.collection(GAMES_TABLE).getOne(id, {
+		expand: 'relField1,relField2.subRelField'
 	});
 
-	if (resultList.length === 0) {
-		return new Response(JSON.stringify({}), {
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-	}
-
-	return new Response(JSON.stringify(resultList.items[0]), {
+	return new Response(JSON.stringify(record), {
 		headers: {
 			'Content-Type': 'application/json'
 		}
@@ -25,17 +17,17 @@ export const GET = async ({ url, locals: { pb } }) => {
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({ request, locals: { pb } }) => {
-	const { name, hostId, board } = await request.json();
+	const { name, host, board } = await request.json();
 
 	const data = {
 		name,
-		hostId,
+		host,
 		board
 	};
 
 	const record = await pb.collection(GAMES_TABLE).create(data);
 
-	return new Response(JSON.stringify({}), {
+	return new Response(JSON.stringify(record), {
 		headers: {
 			'Content-Type': 'application/json'
 		}

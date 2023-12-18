@@ -16,7 +16,7 @@
 	const onAddCardToDeck = async (card) => {
 		const response = await fetch('/api/deck-cards', {
 			method: 'POST',
-			body: JSON.stringify({ deckId: $page.params.slug, cardId: card.id })
+			body: JSON.stringify({ deck: $page.params.slug, card: card.id })
 		});
 	};
 </script>

@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { batchImportParser } from '$lib/utils/card/cardParser';
+	import type { Card } from '$lib/types/card';
+	import { trans } from '$lib/locales/translateCopy';
+
+	export let cards: Array<Card> = [];
 
 	let batchString = '';
 
-	let cards = [];
-
 	const onCardSearch = async () => {
 		const cardList = batchImportParser(batchString);
+		const newCards: Array<Card> = [];
 
 		cardList.forEach(async ({ name, quantity }) => {
 			for (let i = 0; i < quantity; i++) {
@@ -17,11 +20,10 @@
 
 				const card = await response.json();
 
-				await fetch('/api/deck-cards', {
-					method: 'POST',
-					body: JSON.stringify({ deckId: $page.params.slug, cardId: card[0].id })
-				});
+				newCards.push(card[0]);
 			}
+
+			cards = newCards;
 		});
 
 		// cards = await response.json();
@@ -30,7 +32,7 @@
 	const onAddCardToDeck = async (card) => {
 		const response = await fetch('/api/deck-cards', {
 			method: 'POST',
-			body: JSON.stringify({ deckId: $page.params.slug, cardId: card.id })
+			body: JSON.stringify({ deckId: $page.params.slug, card: card.id })
 		});
 	};
 </script>
@@ -41,5 +43,5 @@
 		<textarea id="batchString" name="batchString" bind:value={batchString} />
 	</div>
 
-	<button>Add</button>
+	<button class="submit-button">{trans('component.cardBatchAdd.addCards')}</button>
 </form>
