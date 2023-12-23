@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
-	import type { Writable } from 'svelte/store';
 	import type { Player } from './types';
 	import { MAX_PLAYERS } from './constants';
 	import { board as boardStore } from '$lib/stores/boardStore';

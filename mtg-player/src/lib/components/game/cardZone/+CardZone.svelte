@@ -3,14 +3,25 @@
 	import Card from '$lib/components/game/card/+Card.svelte';
 	import onDrop from '$lib/utils/game/onDrop';
 	import type { CardGame } from '$lib/types/card';
+	import CardZoneModal from '$lib/components/game/modals/+CardZoneModal.svelte';
 
 	export let cards: CardGame[] = [];
 	export let zone: string;
 	export let placeholder: string;
+	export let display = 'relative';
+	export let disabledCardContextMenu = false;
+
+	let showCardZoneModal: boolean = false;
+
+	const onShowCardZoneModal = () => {
+		showCardZoneModal = true;
+	};
 </script>
 
-<div
+<button
+	type="button"
 	class="card-zone"
+	on:contextmenu|preventDefault={onShowCardZoneModal}
 	use:asDropZone={{
 		Extras: { to: zone },
 		TypesToAccept: { 'card/plain': 'all' },
@@ -18,16 +29,18 @@
 	}}
 >
 	{#each cards as card (card.id)}
-		<Card {card} from={zone} />
+		<Card {card} from={zone} {display} contextMenuDisabled={disabledCardContextMenu} />
 	{/each}
 
 	<p class="placeholder">{placeholder}</p>
-</div>
+</button>
+
+<CardZoneModal bind:show={showCardZoneModal} {cards} {zone} />
 
 <style lang="postcss">
 	.card-zone {
 		/* SIZE */
-		@apply min-w-[146px] h-full;
+		@apply w-[146px] h-[204px];
 		/* MARGINS AND PADDING */
 		/* LAYOUT */
 		@apply flex-shrink-0 relative flex;

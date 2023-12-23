@@ -15,12 +15,15 @@
 	export let from: string;
 	export let usePosition = false;
 	export let canTap = false;
+	export let clientResolution = { width: 0, height: 0 };
 
 	let previewing = false;
 	let showContextMenu = false;
 	let showCounterModal = false;
 	let cardTapped = card.tapped || false;
 	let style = '';
+	let faceIndex = 0;
+	let cardImage = '';
 
 	$: if (usePosition === true) {
 		style = `left:${card.x}px; top:${card.y}px;`;
@@ -28,11 +31,19 @@
 		style = '';
 	}
 
+	$: {
+		if (card) {
+			faceIndex = card.faceIndex;
+			cardImage = card.cardFaces[faceIndex];
+			card.clientResolution = clientResolution;
+		}
+	}
+
 	const onContextMenu = (event: MouseEvent) => {
 		showContextMenu = true;
 	};
 
-	const onCardPreview = () => {
+	const onPreview = () => {
 		previewing = true;
 	};
 
@@ -75,6 +86,14 @@
 		previewing = false;
 	};
 
+	const onFlipCard = () => {
+		if (card.cardFaces.length > 1) {
+			const newIndex = faceIndex + 1;
+			faceIndex = newIndex % 2;
+			card.faceIndex = faceIndex;
+		}
+	};
+
 	const onShowCounterModal = () => {
 		showCounterModal = true;
 	};
@@ -87,6 +106,7 @@
 			cardCounters[counter] = 1;
 		}
 		card.counters = cardCounters;
+
 		onSaveCard();
 	};
 
@@ -105,37 +125,83 @@
 	};
 
 	const onTokenCopy = () => {
-		console.log('token copy');
+		const timestamp = new Date().getTime();
+		const newCard = {
+			...card,
+			id: `${card.id}-${timestamp}`,
+			token: true,
+			x: card.x + 20,
+			y: card.y + 20
+		};
+
+		const battlefield = getCurrentPlayer().battlefield;
+		const newCards = [...battlefield, newCard];
+
+		const newPlayerState = updateCurrentPlayer($boardStore.players, $userStore.username, {
+			battlefield: newCards
+		});
+
+		boardStore.set({ ...$boardStore, players: newPlayerState });
+		onSaveCard();
+	};
+
+	const onDragMove = (x, y, dx, dy) => {
+		// card.x = x;
+		// card.y = y;
+	};
+	const onDragEnd = async (x, y, dx, dy) => {
+		const battlefield = getCurrentPlayer().battlefield;
+		const newCards = battlefield.map((battleFieldCard) => {
+			if (battleFieldCard.id === card.id) {
+				battleFieldCard.tapped = cardTapped;
+			}
+			return battleFieldCard;
+		});
+
+		const newPlayerState = updateCurrentPlayer($boardStore.players, $userStore.username, {
+			battlefield: newCards
+		});
+
+		boardStore.set({ ...$boardStore, players: newPlayerState });
+
+		card.x = x;
+		card.y = y;
+
+		onSaveCard();
 	};
 </script>
 
 <button
 	class="card"
 	use:asDroppable={{
-		Operations: 'copy',
 		DataToOffer: { 'card/plain': '' },
-		Extras: { card, from: from }
+		Extras: { card, from: from },
+		onDragStart: { x: card.x || 0, y: card.y || 0 },
+		onDragMove,
+		onDragEnd
 	}}
 	{style}
 	type="button"
 	on:click={onCardTap}
-	on:contextmenu={onContextMenu}
+	on:contextmenu|preventDefault={onContextMenu}
 	on:mouseleave={onMouseExit}
 >
 	<div class={cardTapped ? 'card-rotate' : ''}>
-		<img id="card" class="card-normal" src={card.imageUrl} alt={card.name} />
+		<img id="card" class="card-normal" src={cardImage} alt={card.name} />
 
-		<CardCounter counters={card.counters || {}} />
+		<CardCounter counters={card.counters} />
+
+		{#if card.token}
+			<div class="token-banner">
+				<p>{trans('component.card.token')}</p>
+			</div>
+		{/if}
 	</div>
 
-	{#if previewing}
-		<div class="card-preview">
-			<img src={card.imageUrl} alt={card.name} />
-		</div>
-	{/if}
-
 	<CardContextMenu show={showContextMenu}>
-		<div>
+		<div class="context-menu-list">
+			<button type="button" on:click={onPreview}>{trans('component.card.preview')}</button>
+			<button type="button" on:click={onFlipCard}>{trans('component.card.flipCard')}</button>
 			<button type="button" on:click={onShowCounterModal}>
 				{trans('component.card.addCounter')}
 			</button>
@@ -144,14 +210,21 @@
 	</CardContextMenu>
 </button>
 
-<CounterModal show={showCounterModal} {onAddCounter} {onRemoveCounter} />
+<CounterModal bind:show={showCounterModal} {onAddCounter} {onRemoveCounter} />
+
+{#if previewing}
+	<div class="card-preview">
+		<img src={cardImage} alt={card.name} />
+	</div>
+{/if}
 
 <style lang="postcss">
 	.card {
 		/* SIZE */
+		@apply w-[146px] h-[204px];
 		/* MARGIN & PADDING */
 		/* DISPLAY */
-		@apply relative z-10;
+		@apply block absolute z-10;
 		/* ALIGNMENT */
 		/* BORDERS */
 		/* COLORS */
@@ -173,20 +246,19 @@
 			/* EFFECT */
 		}
 
-		.card-preview {
+		.token-banner {
 			/* SIZE */
-			@apply w-[292px];
+			@apply w-full;
 			/* MARGIN & PADDING */
 			/* DISPLAY */
-			@apply absolute top-0 left-0 overflow-hidden z-50;
+			@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
 			/* ALIGNMENT */
 			/* BORDERS */
-			@apply rounded-2xl;
 			/* COLORS */
+			@apply bg-black text-white text-center;
 			/* TEXT */
 			/* ANIMATION */
 			/* EFFECT */
-			@apply pointer-events-none;
 		}
 
 		.card-rotate {
@@ -201,5 +273,33 @@
 			/* ANIMATION */
 			/* EFFECT */
 		}
+		.context-menu-list {
+			/* SIZE */
+			/* MARGIN & PADDING */
+			/* DISPLAY */
+			@apply flex flex-col;
+			/* ALIGNMENT */
+			/* BORDERS */
+			/* COLORS */
+			/* TEXT */
+			/* ANIMATION */
+			/* EFFECT */
+		}
+	}
+
+	.card-preview {
+		/* SIZE */
+		@apply w-[438px];
+		/* MARGIN & PADDING */
+		/* DISPLAY */
+		@apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden z-50;
+		/* ALIGNMENT */
+		/* BORDERS */
+		@apply rounded-2xl;
+		/* COLORS */
+		/* TEXT */
+		/* ANIMATION */
+		/* EFFECT */
+		@apply pointer-events-none;
 	}
 </style>

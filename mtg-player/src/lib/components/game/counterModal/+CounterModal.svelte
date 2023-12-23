@@ -8,6 +8,10 @@
 	const counters = [
 		'+1/+1',
 		'-1/-1',
+		'Lifelink',
+		'Trample',
+		'Deathtouch',
+		'Hexproof',
 		'Poison',
 		'Energy',
 		'Charge',
@@ -19,7 +23,17 @@
 		'Bounty',
 		'Aim',
 		'Blaze',
-		'Brib'
+		'Brib',
+		'0',
+		'1',
+		'2',
+		'3',
+		'4',
+		'5',
+		'6',
+		'7',
+		'8',
+		'9'
 	];
 
 	const onClose = () => {
@@ -60,7 +74,7 @@
 <style lang="postcss">
 	.peek-modal {
 		/* SIZE */
-		@apply w-fit h-screen;
+		@apply w-fit;
 		/* MARGIN & PADDING */
 		/* DISPLAY */
 		@apply absolute top-0 left-0 overflow-y-auto z-20;

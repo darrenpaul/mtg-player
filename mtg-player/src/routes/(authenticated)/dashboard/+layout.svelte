@@ -8,7 +8,6 @@
 	export let data;
 
 	if (browser) {
-		console.log('data', data);
 		userStore.set(data.user);
 	}
 </script>

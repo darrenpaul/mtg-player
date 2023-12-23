@@ -11,21 +11,42 @@
 	"page": {
 		"decks": {
 			"myDecks": "My Decks",
-			"newDeck": "New Deck",
-			"createDeck": "Create Deck",
-			"updateDeck": "Update Deck",
-			"deckName": "Deck Name"
+			"createDeck": "Create Deck"
+		},
+		"deck": {
+			"deck": "Deck: {name}",
+			"deckName": "Deck Name",
+			"saveDeck": "Save Deck"
+		},
+		"games": {
+			"games": "Games",
+			"myGames": "My Games",
+			"createGame": "Create Game",
+			"creatingNewGame": "Creating New Game",
+			"players": "Players",
+			"deck": "Deck"
 		}
 	},
 	"component": {
+		"deckCard": {
+			"setCommander": "Set Commander",
+			"unsetCommander": "Unset Commander",
+			"removeCard": "Remove Card"
+		},
 		"card": {
 			"setCommander": "Set Commander",
 			"unsetCommander": "Unset Commander",
 			"addCounter": "Add Counter",
-			"tokenCopy": "Token Copy"
+			"tokenCopy": "Token Copy",
+			"token": "Token",
+			"takeControl": "Take Control",
+			"flipCard": "Flip Card",
+			"preview": "Preview"
 		},
-		"cardBatchAdd": {
-			"addCards": "Add Cards"
+		"AddCardForm": {
+			"add": "Add",
+			"cardsToAdd": "Cards to Add",
+			"batchAddFormatting": "Batch add cards in the format: 1x Sol Ring"
 		},
 		"cardList": {
 			"cards": "Cards",
@@ -36,19 +57,30 @@
 		},
 		"createGameForm": {
 			"gameName": "Game Name",
-			"username": "Username",
-			"selectDeck": "Select Deck"
+			"player": "Player {index}",
+			"selectDeck": "Select Deck",
+			"addPlayer": "Add Player",
+			"deckSelection": "Deck Selection",
+			"createNewGame": "Create New Game"
 		},
 		"library": {
 			"drawCard": "Draw Card",
 			"peek": "Peek",
-			"shuffle": "Shuffle"
+			"shuffle": "Shuffle",
+			"mulligan": "Mulligan",
+			"reset": "Reset",
+			"search": "Search",
+			"creatureTokens": "Creature Tokens"
 		},
-		"peekModal": {
+		"modal": {
 			"peek": "Peek",
 			"peekTop": "Peek Top",
 			"peekBottom": "Peek Bottom",
-			"close": "Close"
+			"close": "Close",
+			"insertXCardsFrom": "Insert X Cards from",
+			"top": "Top",
+			"bottom": "Bottom",
+			"save": "Save"
 		},
 		"board": {
 			"commandZone": "Command Zone",
@@ -60,6 +92,11 @@
 			"add": "Add",
 			"remove": "Remove",
 			"close": "Close"
+		},
+		"health": {
+			"currentHealth": "Current Health",
+			"commanderDamage": "Commander Damage",
+			"rollD20": "Roll D20"
 		}
 	}
 }

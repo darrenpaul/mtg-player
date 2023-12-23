@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { Writable } from 'svelte/store';
-	import routes from './routes';
-	import { getContext } from 'svelte';
-	import type { User } from '$lib/types/user';
 	import { user as userStore } from '$lib/stores/userStore';
+	import { DECKS_ROUTE, GAMES_ROUTE } from '$lib/routes';
+
+	let navigationRoutes = [DECKS_ROUTE, GAMES_ROUTE];
 </script>
 
 <div class="navigation">
@@ -17,7 +16,7 @@
 		</div>
 
 		<div class="links">
-			{#each routes as route}
+			{#each navigationRoutes as route}
 				<a href={route.path}>{route.name}</a>
 			{/each}
 
@@ -45,6 +44,7 @@
 			/* SIZE */
 			@apply h-navigation-desktop;
 			/* MARGIN & PADDING */
+			@apply px-8;
 			/* DISPLAY */
 			@apply flex;
 			/* ALIGNMENT */

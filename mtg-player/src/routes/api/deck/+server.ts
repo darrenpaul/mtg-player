@@ -6,7 +6,17 @@ const getDeckCards = async (pb, deckId) => {
 		expand: ['card']
 	});
 
-	return cards;
+	return cards.map((card) => {
+		return {
+			id: card.id,
+			cardId: card.expand.card.id,
+			deck: card.deck,
+			images: card.expand.card.images,
+			layout: card.expand.card.layout,
+			name: card.expand.card.name,
+			tag: card.tag
+		};
+	});
 };
 
 /** @type {import('./$types').RequestHandler} */
@@ -32,19 +42,32 @@ export const GET = async ({ url, locals: { pb } }) => {
 };
 
 /** @type {import('./$types').RequestHandler} */
-export const POST = async ({ request, locals }) => {
-	const { deckName } = await request.json();
+export const POST = async ({ request, locals: { pb } }) => {
+	const { name } = await request.json();
 
 	const data = {
-		userId: locals.pb.authStore.model.id,
-		name: deckName
+		userId: pb.authStore.model.id,
+		name: name
 	};
 
-	const record = await locals.pb.collection(DECKS_TABLE).create(data);
+	const record = await pb.collection(DECKS_TABLE).create(data);
 
 	return new Response(JSON.stringify({ ...record }), {
 		headers: {
 			'Content-Type': 'application/json'
 		}
 	});
+};
+
+/** @type {import('./$types').RequestHandler} */
+export const PUT = async ({ request, locals: { pb } }) => {
+	const { deckId, payload } = await request.json();
+
+	const data = {
+		...payload
+	};
+
+	await pb.collection(DECKS_TABLE).update(deckId, data);
+
+	return new Response('Success');
 };

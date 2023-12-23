@@ -10,5 +10,5 @@ export const batchImportParser = (text: string) => {
 		return { name, quantity };
 	});
 
-	return cards;
+	return cards.filter((card) => card !== undefined);
 };

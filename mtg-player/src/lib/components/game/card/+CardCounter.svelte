@@ -7,22 +7,25 @@
 		if (counters) {
 			const entries = Object.entries(counters);
 			countersArray = entries.map(([key, value]) => {
-				return `${key}: ${value}`;
+				return `${value}x ${key}`;
 			});
 		}
 	}
 </script>
 
-<div class="counters">
-	{#each countersArray as counter}
-		<p>{counter}</p>
-	{/each}
-</div>
+{#if countersArray.length > 0}
+	<div class="counters">
+		{#each countersArray as counter}
+			<p>{counter}</p>
+		{/each}
+	</div>
+{/if}
 
 <style lang="postcss">
 	.counters {
 		/* SIZE */
 		/* MARGIN & PADDING */
+		@apply p-2;
 		/* DISPLAY */
 		@apply absolute flex flex-col top-0 left-0;
 		/* ALIGNMENT */

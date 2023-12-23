@@ -4,13 +4,26 @@ import { board as boardStore, getCurrentPlayer } from '$lib/stores/boardStore';
 import { hand as handStore } from '$lib/stores/handStore';
 import { user as userStore } from '$lib/stores/userStore';
 import { library as libraryStore, peekIndex as peekIndexStore } from '$lib/stores/libraryStore';
-import { BATTLEFIELD, HAND, COMMAND_ZONE, GRAVEYARD, LIBRARY } from '$lib/constants/cardZones';
+import {
+	BATTLEFIELD,
+	HAND,
+	COMMAND_ZONE,
+	GRAVEYARD,
+	LIBRARY,
+	EXILE,
+	TOKEN_MODAL
+} from '$lib/constants/cardZones';
 import { updateCurrentPlayer } from '$lib/utils/game/player';
 import { saveCardsInHand } from '$lib/utils/game/hand';
 
 export default async (x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) => {
 	const { card, from } = DroppableExtras;
 	const { to } = DropZoneExtras;
+
+	if (from === TOKEN_MODAL) {
+		const timestamp = new Date().getTime();
+		card.id = `${card.id}-${timestamp}`;
+	}
 
 	if (from === LIBRARY) {
 		fromLibrary({ droppedCard: card });
@@ -33,35 +46,51 @@ export default async (x, y, Operation, DataOffered, DroppableExtras, DropZoneExt
 		fromCardZone({ droppedCard: card, zone: GRAVEYARD });
 	}
 
-	if (to === HAND) {
-		toHand({ droppedCard: card });
+	if (!card.token) {
+		if (from === GRAVEYARD) {
+			fromCardZone({ droppedCard: card, zone: GRAVEYARD });
+		}
+
+		if (to === HAND) {
+			toHand({ droppedCard: card });
+		}
+
+		if (to === COMMAND_ZONE) {
+			toCardZone({ droppedCard: card, zone: COMMAND_ZONE });
+		}
+
+		if (to === GRAVEYARD) {
+			toCardZone({ droppedCard: card, zone: GRAVEYARD });
+		}
+
+		if (to === EXILE) {
+			toCardZone({ droppedCard: card, zone: EXILE });
+		}
+
+		if (to === LIBRARY) {
+			toLibrary({
+				droppedCard: card,
+				insertPosition: DropZoneExtras.insertPosition,
+				insertIndex: DropZoneExtras.insertIndex
+			});
+		}
 	}
 
 	if (to === BATTLEFIELD) {
 		toBattlefield({ droppedCard: card, position: { x, y } });
 	}
 
-	if (to === COMMAND_ZONE) {
-		toCardZone({ droppedCard: card, zone: COMMAND_ZONE });
-	}
+	if (from === BATTLEFIELD && to === BATTLEFIELD) return;
 
-	if (to === GRAVEYARD) {
-		toCardZone({ droppedCard: card, zone: GRAVEYARD });
-	}
-
-	if (to === LIBRARY) {
-		toLibrary({ droppedCard: card });
-	}
-
-	// const board = get(boardStore);
-	// const game = get(gameStore);
-	// await fetch('/api/game', {
-	// 	method: 'PUT',
-	// 	headers: {
-	// 		'Content-Type': 'application/json'
-	// 	},
-	// 	body: JSON.stringify({ id: game.id, board: board })
-	// });
+	const board = get(boardStore);
+	const game = get(gameStore);
+	await fetch('/api/game', {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ id: game.id, board: board })
+	});
 };
 
 const fromLibrary = ({ droppedCard }) => {
@@ -127,12 +156,17 @@ const toBattlefield = ({ droppedCard, position }) => {
 	const board = get(boardStore);
 	const player = getCurrentPlayer();
 	const battlefield: Array<any> = player.battlefield;
+	if (!droppedCard.x) {
+		droppedCard.x = position.x;
+	}
+	if (!droppedCard.y) {
+		droppedCard.y = position.y;
+	}
 
 	const newBattlefield = [
 		...battlefield,
 		{
-			...droppedCard,
-			...position
+			...droppedCard
 		}
 	];
 
@@ -163,8 +197,9 @@ const toCardZone = ({ droppedCard, zone }) => {
 	boardStore.set({ ...board, players: newPlayerState });
 };
 
-const toLibrary = ({ droppedCard }) => {
-	const libraryCards = get(libraryStore);
-	const newLibraryCards = [droppedCard, ...libraryCards];
+const toLibrary = ({ droppedCard, insertPosition, insertIndex }) => {
+	const insertIndexNumber = parseInt(insertIndex);
+	let newLibraryCards = [...get(libraryStore)];
+	newLibraryCards.splice(insertIndexNumber, 0, droppedCard);
 	libraryStore.set(newLibraryCards);
 };

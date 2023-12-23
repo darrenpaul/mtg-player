@@ -22,7 +22,7 @@
 		/* SIZE */
 		/* MARGIN & PADDING */
 		/* DISPLAY */
-		@apply absolute flex flex-col;
+		@apply absolute flex flex-col top-0;
 		/* ALIGNMENT */
 		/* BORDERS */
 		/* COLORS */

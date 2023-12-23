@@ -6,7 +6,7 @@
 	let cards = [];
 
 	const onCardSearch = async () => {
-		const response = await fetch(`/api/cards?name=${name}`, {
+		const response = await fetch(`/api/card?name=${name}`, {
 			method: 'GET'
 		});
 
