@@ -13,6 +13,7 @@
 	export let player;
 	export let responsive: boolean = false;
 	export let parentSize: { width: number; height: number };
+	export let playerClient: { width: number; height: number };
 
 	let previewing = false;
 	let showContextMenu = false;
@@ -32,8 +33,8 @@
 			cardHeight = 102;
 
 			if (parentSize.width > 0 && parentSize.height > 0 && card.x > 0 && card.y > 0) {
-				const xPercentage = (parentSize.width * 100) / card.clientResolution?.width || 0;
-				const yPercentage = (parentSize.height * 100) / card.clientResolution?.height || 0;
+				const xPercentage = (parentSize.width * 100) / playerClient?.width || 0;
+				const yPercentage = (parentSize.height * 100) / playerClient?.height || 0;
 
 				cardX = (card.x * xPercentage) / 100;
 				cardY = (card.y * yPercentage) / 100;

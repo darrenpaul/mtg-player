@@ -1,12 +1,13 @@
 <script lang="ts">
 	import GameList from '$lib/components/+GameList.svelte';
-	import CreateGameForm from '$lib/components/createGameForm/+CreateGameForm.svelte';
+	import CreateGameForm from '$lib/components/game/createGameForm/+CreateGameForm.svelte';
 	import { trans } from '$lib/locales/translateCopy.js';
 
 	export let data;
 	let user = data.user;
 	let decks = data.decks;
 	let games = data.games;
+	let friends = data.friends;
 	let creatingNewGame = true;
 
 	const onCreateDeck = async () => {
@@ -15,7 +16,7 @@
 </script>
 
 {#if creatingNewGame}
-	<CreateGameForm {user} {decks} />
+	<CreateGameForm {user} {decks} {friends} />
 {/if}
 
 {#if creatingNewGame === false}

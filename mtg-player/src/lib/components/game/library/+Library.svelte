@@ -21,6 +21,7 @@
 	import LibraryDropModal from '$lib/components/game/modals/+LibraryDropModal.svelte';
 	import CardZoneModal from '$lib/components/game/modals/+CardZoneModal.svelte';
 	import CreatureTokenModal from '$lib/components/game/modals/+CreatureTokenModal.svelte';
+	import { handleUpdateBoard } from '$lib/apiHelper/board';
 
 	let originalLibrary: Array<any> = [];
 	let player: BoardPlayer;
@@ -140,13 +141,7 @@
 
 		player = getCurrentPlayer();
 
-		await fetch('/api/game', {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ id: $gameStore.id, board: $boardStore })
-		});
+		handleUpdateBoard($boardStore.id, $boardStore.players);
 
 		clearHand();
 

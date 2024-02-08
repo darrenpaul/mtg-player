@@ -10,6 +10,7 @@
 	import { trans } from '$lib/locales/translateCopy';
 	import CardCounter from '$lib/components/game/card/+CardCounter.svelte';
 	import CounterModal from '$lib/components/game/counterModal/+CounterModal.svelte';
+	import { handleUpdateBoard } from '$lib/apiHelper/board';
 
 	export let card: CardGame;
 	export let from: string;
@@ -72,13 +73,7 @@
 	};
 
 	const onSaveCard = async () => {
-		await fetch('/api/game', {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ id: $gameStore.id, board: $boardStore })
-		});
+		handleUpdateBoard($boardStore.id, $boardStore.players);
 	};
 
 	const onMouseExit = () => {
@@ -146,26 +141,28 @@
 	};
 
 	const onDragMove = (x, y, dx, dy) => {
-		// card.x = x;
-		// card.y = y;
+		card.x = x;
+		card.y = y;
 	};
 	const onDragEnd = async (x, y, dx, dy) => {
+		console.log(x, y);
+		card.x = x;
+		card.y = y;
 		const battlefield = getCurrentPlayer().battlefield;
 		const newCards = battlefield.map((battleFieldCard) => {
 			if (battleFieldCard.id === card.id) {
 				battleFieldCard.tapped = cardTapped;
+				return card;
 			}
 			return battleFieldCard;
 		});
+		console.log('newCards ~ newCards:', newCards);
 
 		const newPlayerState = updateCurrentPlayer($boardStore.players, $userStore.username, {
 			battlefield: newCards
 		});
 
 		boardStore.set({ ...$boardStore, players: newPlayerState });
-
-		card.x = x;
-		card.y = y;
 
 		onSaveCard();
 	};

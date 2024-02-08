@@ -3,6 +3,7 @@
 	import { board as boardStore } from '$lib/stores/boardStore';
 	import { user as userStore } from '$lib/stores/userStore';
 	import { game as gameStore } from '$lib/stores/gameStore';
+	import { handleUpdateBoard } from '$lib/apiHelper/board';
 
 	let deckId: string;
 	let decks = [];
@@ -48,25 +49,15 @@
 		player.health = 40;
 		player.commanderDamage = 0;
 
-		const players = [
+		const newPlayers = [
 			player,
 			...$boardStore.players.filter((player) => player.username !== $userStore.username)
 		];
 
-		const newBoardState = {
-			...$boardStore,
-			players
-		};
+		boardStore.set({ ...$boardStore, players: newPlayers });
 
-		boardStore.set(newBoardState);
-
-		await fetch('/api/game', {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ id: $gameStore.id, board: $boardStore })
-		});
+		const { id, players } = $boardStore;
+		handleUpdateBoard(id, players);
 	};
 </script>
 

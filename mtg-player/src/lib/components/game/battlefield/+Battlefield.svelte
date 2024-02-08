@@ -7,15 +7,16 @@
 	import onDrop from '$lib/utils/game/onDrop';
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import MagnifierIcon from '$lib/icons/+MagnifierIcon.svelte';
+	import { handleUpdateBoard } from '$lib/apiHelper/board';
+	import { updateCurrentPlayer } from '$lib/utils/game/player';
 
 	export let onFocusPlayer = () => {};
 
 	let element;
 	let cards: CardGame[] = [];
 	let player;
-	let offsetWidth = 0;
-	let offsetHeight = 0;
+	let width = 0;
+	let height = 0;
 
 	$: {
 		$boardStore, boardUpdated();
@@ -23,8 +24,17 @@
 
 	onMount(() => {
 		if (browser) {
-			offsetWidth = element.offsetWidth;
-			offsetHeight = element.offsetHeight;
+			width = element.offsetWidth;
+			height = element.offsetHeight;
+			player = getCurrentPlayer();
+			player.clientWidth = width;
+			player.clientHeight = height;
+
+			const newPlayerState = updateCurrentPlayer($boardStore.players, player.username, {
+				...player
+			});
+
+			handleUpdateBoard($boardStore.id, newPlayerState);
 		}
 	});
 
@@ -53,7 +63,7 @@
 		<CardBattlefield
 			{card}
 			from={BATTLEFIELD}
-			clientResolution={{ width: offsetWidth, height: offsetHeight }}
+			clientResolution={{ width, height }}
 			usePosition={true}
 			canTap={true}
 		/>

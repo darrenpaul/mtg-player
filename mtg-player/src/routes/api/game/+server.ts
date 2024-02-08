@@ -1,4 +1,4 @@
-import { GAMES_TABLE } from '$lib/server/constants/database';
+import { BOARDS_TABLE, GAMES_TABLE, GAME_LOGS_TABLE } from '$lib/server/constants/database';
 
 /** @type {import('./$types').RequestHandler} */
 export const GET = async ({ url, locals: { pb } }) => {
@@ -17,21 +17,39 @@ export const GET = async ({ url, locals: { pb } }) => {
 
 /** @type {import('./$types').RequestHandler} */
 export const POST = async ({ request, locals: { pb } }) => {
-	const { name, host, board } = await request.json();
+	try {
+		const { name, host, players, board } = await request.json();
 
-	const data = {
-		name,
-		host,
-		board
-	};
+		const data = {
+			name,
+			host,
+			players
+		};
 
-	const record = await pb.collection(GAMES_TABLE).create(data);
+		const game = await pb.collection(GAMES_TABLE).create(data);
 
-	return new Response(JSON.stringify(record), {
-		headers: {
-			'Content-Type': 'application/json'
-		}
-	});
+		const gameActivityData = {
+			game: game.id,
+			activity: []
+		};
+
+		await pb.collection(GAME_LOGS_TABLE).create(gameActivityData);
+
+		const boardData = {
+			game: game.id,
+			players: board
+		};
+
+		await pb.collection(BOARDS_TABLE).create(boardData);
+
+		return new Response(JSON.stringify(game), {
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 /** @type {import('./$types').RequestHandler} */

@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let width = 24;
-	export let height = 24;
+	export let width: number | string = 24;
+	export let height: number | string = 24;
 	export let fill = 'fill-black';
 </script>
 

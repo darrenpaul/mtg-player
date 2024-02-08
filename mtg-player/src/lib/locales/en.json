@@ -97,6 +97,10 @@
 			"currentHealth": "Current Health",
 			"commanderDamage": "Commander Damage",
 			"rollD20": "Roll D20"
+		},
+		"addFriendForm": {
+			"friendUsername": "Friend Username",
+			"addFriend": "Add Friend"
 		}
 	}
 }

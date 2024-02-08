@@ -4,7 +4,6 @@
 	import ShieldIcon from '$lib/icons/+ShieldIcon.svelte';
 
 	export let player: BoardPlayer;
-	console.log('player:', player);
 </script>
 
 <div class="player-stats">

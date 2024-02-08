@@ -11,7 +11,7 @@
 
 	const onCreateDeck = async () => {
 		const deck = await handleCreateDeck();
-		goto(`/decks/${deck.id}`);
+		goto(`/deck/${deck.id}`);
 	};
 </script>
 

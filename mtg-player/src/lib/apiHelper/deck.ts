@@ -1,3 +1,5 @@
+import { DECK_API } from '$lib/routesApi';
+
 const BASE_URL = '/api/deck';
 
 export const handleCreateDeck = async () => {
@@ -14,4 +16,11 @@ export const handleUpdateDeck = async (deckId: string, payload: object) => {
 		method: 'PUT',
 		body: JSON.stringify({ deckId, payload })
 	});
+};
+
+export const handleGetDeck = async (deckId: string) => {
+	const response = await fetch(DECK_API(deckId), {
+		method: 'GET'
+	});
+	return await response.json();
 };

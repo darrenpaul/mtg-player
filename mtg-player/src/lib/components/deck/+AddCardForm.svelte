@@ -9,9 +9,6 @@
 	export let cards: Array<Card> = [];
 
 	let cardAddString = '';
-	let deckId = '';
-
-	$: deckId = $page.params.slug;
 
 	const onAddCards = async () => {
 		const cardList = batchImportParser(cardAddString);
@@ -26,6 +23,7 @@
 
 		const cardsResolved = await Promise.all(getCardsPromise);
 
+		const deckId = $page.params.id;
 		const cardsToSavePromise: any[] = [];
 		cardsResolved.forEach((card) =>
 			cardsToSavePromise.push(
@@ -35,6 +33,7 @@
 
 		const newCards = await Promise.all(cardsToSavePromise);
 		cards = [...cards, ...newCards];
+		console.log('onAddCards ~ cards:', cards);
 	};
 </script>
 

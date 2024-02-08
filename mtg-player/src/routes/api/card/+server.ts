@@ -103,6 +103,7 @@ export const GET = async ({ url, fetch: eventFetch, locals: { pb } }) => {
 	}
 
 	const card = await getCardFromLocalDb(pb, name);
+	console.log('GET ~ card:', card);
 
 	if (!card) {
 		const scryfallCard = await getScryfallCard(name);

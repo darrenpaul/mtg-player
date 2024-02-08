@@ -40,7 +40,14 @@
 			{card}
 			{player}
 			responsive={true}
-			parentSize={{ width: offsetWidth, height: offsetHeight }}
+			parentSize={{
+				width: offsetWidth,
+				height: offsetHeight
+			}}
+			playerClient={{
+				width: player.clientWidth,
+				height: player.clientHeight
+			}}
 		/>
 	{/each}
 </button>

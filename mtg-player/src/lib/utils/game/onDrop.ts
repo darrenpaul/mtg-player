@@ -15,10 +15,13 @@ import {
 } from '$lib/constants/cardZones';
 import { updateCurrentPlayer } from '$lib/utils/game/player';
 import { saveCardsInHand } from '$lib/utils/game/hand';
+import { handleUpdateBoard } from '$lib/apiHelper/board';
 
 export default async (x, y, Operation, DataOffered, DroppableExtras, DropZoneExtras) => {
 	const { card, from } = DroppableExtras;
 	const { to } = DropZoneExtras;
+
+	if (from === BATTLEFIELD && to === BATTLEFIELD) return;
 
 	if (from === TOKEN_MODAL) {
 		const timestamp = new Date().getTime();
@@ -80,17 +83,8 @@ export default async (x, y, Operation, DataOffered, DroppableExtras, DropZoneExt
 		toBattlefield({ droppedCard: card, position: { x, y } });
 	}
 
-	if (from === BATTLEFIELD && to === BATTLEFIELD) return;
-
 	const board = get(boardStore);
-	const game = get(gameStore);
-	await fetch('/api/game', {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ id: game.id, board: board })
-	});
+	handleUpdateBoard(board.id, board.players);
 };
 
 const fromLibrary = ({ droppedCard }) => {
@@ -156,6 +150,7 @@ const toBattlefield = ({ droppedCard, position }) => {
 	const board = get(boardStore);
 	const player = getCurrentPlayer();
 	const battlefield: Array<any> = player.battlefield;
+
 	if (!droppedCard.x) {
 		droppedCard.x = position.x;
 	}

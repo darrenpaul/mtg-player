@@ -1,4 +1,4 @@
-import { DECKS_API, GAMES_API } from '$lib/routesApi';
+import { DECKS_API, FRIENDS_API, GAMES_API } from '$lib/routesApi';
 import type { User } from '$lib/types/user';
 import { redirect } from '@sveltejs/kit';
 
@@ -19,5 +19,10 @@ export const load = async ({ fetch, locals: { pb } }) => {
 	});
 	const games = await gamesResponse.json();
 
-	return { decks, user, games };
+	const friendsResponse = await fetch(FRIENDS_API, {
+		method: 'GET'
+	});
+	const friends = await friendsResponse.json();
+
+	return { decks, user, games, friends };
 };

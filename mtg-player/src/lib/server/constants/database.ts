@@ -6,3 +6,4 @@ export const USERS_TABLE = 'users';
 export const GAMES_TABLE = 'games';
 export const KEYWORDS_TABLE = 'keyword';
 export const GAME_LOGS_TABLE = 'game_log';
+export const BOARDS_TABLE = 'boards';

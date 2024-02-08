@@ -7,13 +7,11 @@
 	import { trans } from '$lib/locales/translateCopy';
 	import { board as boardStore, getCurrentPlayer } from '$lib/stores/boardStore';
 	import Health from '$lib/components/game/panels/+Health.svelte';
-	import HealthEnemy from '$lib/components/game/panels/+HealthEnemy.svelte';
 	import BattlefieldEnemy from '$lib/components/game/battlefield/+BattlefieldEnemy.svelte';
 	import { user as userStore } from '$lib/stores/userStore';
 	import { GRID, APPLESFOCUS, PREVIEW } from '$lib/constants/viewLayouts';
 
 	let players: BoardPlayer[] = [];
-	let enemies: BoardPlayer[] = [];
 	let focusPlayer: BoardPlayer;
 	let player;
 	let commandZone;
@@ -26,7 +24,6 @@
 	}
 
 	$: players = $boardStore?.players;
-	$: enemies = players.filter((player) => player.username !== $userStore.username) || [];
 
 	const boardUpdated = async () => {
 		player = getCurrentPlayer();
@@ -56,8 +53,6 @@
 </script>
 
 <div class="board">
-	<!-- <HealthEnemy /> -->
-
 	{#if viewLayout === GRID}
 		<div class="grid-layout">
 			{#each players as player}

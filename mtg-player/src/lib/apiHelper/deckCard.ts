@@ -1,6 +1,9 @@
 const BASE_URL = '/api/deck-cards';
 
 export const handleAddDeckCard = async ({ deck, card, tag }) => {
+	console.log('handleAddDeckCard ~ tag:', tag);
+	console.log('handleAddDeckCard ~ card:', card);
+	console.log('handleAddDeckCard ~ deck:', deck);
 	const response = await fetch(BASE_URL, {
 		method: 'POST',
 		body: JSON.stringify({ deck, card, tag })
